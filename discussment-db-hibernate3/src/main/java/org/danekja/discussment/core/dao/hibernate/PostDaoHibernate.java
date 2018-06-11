@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -53,7 +54,13 @@ public class PostDaoHibernate extends GenericDaoHibernate<Long, Post> implements
     public Post getLastPost(Discussion discussion) {
         List<Post> posts = getPostsByDiscussion(discussion);
         if (posts.size() != 0) {
-            posts.sort(Comparator.comparing(o -> o.getCreated(), Comparator.reverseOrder()));
+            Collections.sort(posts, new Comparator<Post>() {
+                @Override
+                public int compare(Post o1, Post o2) {
+                    //reverse order
+                    return o2.getCreated().compareTo(o1.getCreated());
+                }
+            });
             return posts.get(0);
         }
         return null;
